@@ -9,6 +9,7 @@
 
 class UInputMappingContext;
 class UInputAction;
+class IEnemyInterface;
 
 /**
  * 
@@ -20,6 +21,7 @@ class AURA_API AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
+	virtual void PlayerTick(float DeltaTime) override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -35,4 +37,10 @@ private:
 
 	// Function to be linked with our Move Action. Showcases a new way to forward-declare
 	void Move(const struct FInputActionValue& InputActionValue);
+
+	void CursorTrace();
+
+	// These are specific pointers for Interfaces
+	TScriptInterface<IEnemyInterface> LastActor;
+	TScriptInterface<IEnemyInterface> ThisActor;
 };
