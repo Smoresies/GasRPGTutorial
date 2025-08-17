@@ -3,10 +3,17 @@
   * [PlayerState](#playerstate)
   * [UAbilitySystemComponent](#uabilitysystemcomponent)
     * [PlayerState vs Pawn-Owned](#playerstate-vs-pawn-owned)
+    * [Ability Actor Info](#ability-actor-info)
   * [UAttributeSet](#uattributeset)
+    * [What are Attributes:](#what-are-attributes)
 * [Multiplayer](#multiplayer)
+  * [Replication](#replication)
   * [Set Replicated Mode](#set-replicated-mode)
+    * [Special notes for Mixed Replication Mode:](#special-notes-for-mixed-replication-mode)
   * [Set Net Update Frequency](#set-net-update-frequency)
+  * [Prediction](#prediction)
+    * [Client-Side Change Example WITHOUT Prediction](#client-side-change-example-without-prediction)
+    * [Client-Side Change WITH Prediction](#client-side-change-with-prediction)
 <!-- TOC -->
 
 # Gas
@@ -64,6 +71,75 @@ valid ASC and Controller, so we can call it safely with no worries.
 
 
 ## UAttributeSet
+This is automatically registered to the ACS it is constructed alongside. Additionally, you can have multiple 
+AttributeSets registered into an ACS. For example: if you wanted to have attributes onto different types (Primary, 
+Secondary, Tertiary) you may... BUT These must be separate class-types (you cannot have more than some attributeset 
+of a given class).
+
+Attribute sets have neglible memory and thus you can have one for each possible class. In this project we are using 
+only a single AttributeSet for all Characters in the game and can grab only the needed attributes from the set for 
+each Character
+
+### What are Attributes:
+Attributes are numberical quantities associated with a given entity in the game (such as a character), all 
+attributes are floats, exist with FGameplayAttributeData, and are stored on the AttributeSet. The AttributeSet keeps 
+Attributes under close supervision. We can know when an attribute changes and respond with any needed functionality.
+
+Attributes _can_ be set directly in code but the preferred methodology is by using Gameplay Effects (which can 
+change attributes in a number of different ways). Aside from the built-in capabilities of Gameplay Effects, another 
+reason to use them is that Gameplay Effects allow us to predict changes to attributes (Apply Prediction).
+
+Attributes consist of 2 actual values: A Base Value and a Current Value.
+
+The Base Value is the Permanent value of the attribute.
+
+The Current Value is the base value PLUS any temporary modifications from Gameplay Effects... Think of Buffs/Debuffs,
+you may have an effect that adds or subtracts a value for a period of time... But when that tiem is up, it goes back 
+to the Base Value.
+
+The Max Value is separate from the Base Value... If the Max Attribute can CHANGE you should have this have this as 
+it's own Attribute (Health and Max Health would be two separate Attributes)
+
+## Creating Attributes
+When creating an Attribute in your AttributeSet class there are 4 steps to follow:
+
+1 - Add the member variable. This should be of type FGameplayAttributeData, should have UProperty, and will likely 
+need to be replicated (although some may not). Example:
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
+	FGameplayAttributeData Health;
+
+If your member variable is NOT replicated, then stop here! Otherwise...
+
+2 - Create the replication functions. These can take either zero or one parameters. If they take a parameter then 
+that parameter should be the OLD value of the given Attribute AND should be a const reference. Example:
+
+    UFUNCTION()
+    void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
+
+After you've prototyped this function the decleration should looks as such: 
+
+    void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
+    {
+        GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth);
+    }
+
+This is providing the Rep Notify signal for specifically a Gameplay Attribute. It takes the class type of the 
+Attribute, new value, and old value.
+
+3 - Lastly you need to add this into a new overriden function "GetLifetimeReplicatedProps". This decleration is:
+
+    void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+    {
+        Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	    DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
+    }
+The DOREPLIFETIME_CONDITION_NOTIFY macro registers the member variable/attribute to be replicated. In this example 
+it is replicated without conditions and if the value is set on the server we will always replicate it
+
+There is an additional option for the last parameter "REPNOTIFY_OnChanged" which is an "optimized" possibility, but 
+with GAS we ALWAYS want to Rep Notify to potentially reply the effect (even if it didn't change!)
 
 # Multiplayer
 ## Replication
@@ -113,3 +189,36 @@ how often the server will try to update clients.
 As changes occur on server for player state, server will send updates out. This is
 normally quite low, like half a second. 
 Apparently 100 is high and means 100 updates per second
+
+## Prediction
+The client doesn't need to wait for the server's permission to change a value. The value can change
+immediately client-side and the server is informed of the change. The server can roll back changes that are invalid.
+This seems to be our only way of Replicating back to the server from the client (albeit in a limited sense).
+
+Prediction makes for a smoother experience in multiplayer - "Something you don't notice when it is there, but do
+notice when it's not".
+
+### Client-Side Change Example WITHOUT Prediction
+On Client you have an attribute that needs to change. Since the server should be in charge of important gameplay 
+changes (otherwise clients would be able to cheat), a request is sent to the server to tell it that the attribute's 
+value needs to change. 
+
+The server receives the request, decides if the attribute needs to change (by any number of criteria set by the 
+developers), and if that change is deemed valid that change is then sent back to the Client (who can now update that 
+change).
+
+This results in a noticable delay due to the time required to travel across the server, the time the client receives 
+the information, and the time it takes to implement the change... sometimes up to 100 
+milliseconds or more, which can lead to a very bad gameplay experience.
+
+### Client-Side Change WITH Prediction
+With prediction in GAS, a Gameplay Effect modifies an Attribute client-side and that change is perceived
+on the client instantly.
+No lag times!
+
+Then that change is sent up to the server who still has the responsibility of validating that change.
+If the server decides it's a valid change, then it can inform the other clients of the change.
+However, if the server decides that the change is not valid (for example, a client hacks the game and
+tries to do an ungodly amount of damage) then the server can reject that change and roll
+back the changes, setting the client's value back to the correct one. So the server still has authority, but our 
+client doesn't have to have a delay.
