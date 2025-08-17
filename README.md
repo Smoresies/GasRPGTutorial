@@ -66,6 +66,12 @@ valid ASC and Controller, so we can call it safely with no worries.
 ## UAttributeSet
 
 # Multiplayer
+## Replication
+Replication is the sending of server-side information back to the client-side versions of the game to keep the 
+"correct" version of the game flowing at all points in time. In this way the server is seen as the "One True Game" 
+in which all client copies _should_ be matching as closely as possible. Replication allows us to update clients 
+quickly and often to ensure they're kept as up to date to the Server as possible.
+
 ## Set Replicated Mode
 The function SetReplicationMode (held in AuraAbilitySystemComponent) takes an Enum of EGameplayEffectReplicationMode.
  
