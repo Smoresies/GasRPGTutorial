@@ -20,6 +20,18 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 
+	/*
+     * SetReplicationMode takes an Enum of EGameplayEffectReplicationMode
+     * This has Three possible Modes:
+     *		Full - Gameplay effects replicated to ALL CLIENTS.
+     *			   Use for Single Player
+     *		Mixed - Gameplay Effects replicated to owning client only. Gameplay Cues and Gameplay Tags replicated to all clients
+     *			   Multiplayer (Player-Controlled)
+     *		Minimal - Gameplay Effects are NOT Replicated. Gameplay Cues and Gameplay Tags replicated to all clients
+     *			   Multiplayer (AI-Controlled) - Chosen here, as this is for AI
+     */
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
