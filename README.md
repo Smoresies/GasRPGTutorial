@@ -20,7 +20,7 @@
     * [Client-Side Change WITH Prediction](#client-side-change-with-prediction)
 <!-- TOC -->
 
-# General Unreal "Things"
+# General Unreal
 ## Debug
 
 You can use up arrow on keyboard to reference previous commands
@@ -32,6 +32,20 @@ You can use up arrow on keyboard to reference previous commands
       controller, and more
     * Shows Owned Tags
     * Shows Attributes
+## UI
+Primarily we use the MVC (Model, View, Controller) implementation for UI in Unreal. The UI itself should be the View,
+influenced by the Model which is done by the Controller. The view itself will only need to worry about how the UI 
+needs to look. Any functionality (button pressing for example) will be handled by the Controller to then signal the 
+Model to make any necessary changes.
+
+This should be developed in such a way that the View (Widgets) can be changed out without the Controller caring, and 
+the Controller can be swapped out without the Model (backend) caring.
+
+### Widgets
+Widgets inheirit from UUserWidget and are used primarily for our front-end UI information. These will directly 
+effect how our HUD looks.
+
+Widgets should know what their controller is (in MVC Architecture) but not the other way around.
 
 # Gas
 ## PlayerState
@@ -170,7 +184,7 @@ To use this in your game you can define something like this, and then add game-s
     GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
     
     ATTRIBUTE_ACCESSORS(UMyHealthSet, Health)
-~~~~
+
 ## Effect Actor
 [TBD]
 
