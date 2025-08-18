@@ -1,4 +1,6 @@
 <!-- TOC -->
+* [General Unreal "Things"](#general-unreal-things)
+  * [Debug](#debug)
 * [Gas](#gas)
   * [PlayerState](#playerstate)
   * [UAbilitySystemComponent](#uabilitysystemcomponent)
@@ -6,6 +8,8 @@
     * [Ability Actor Info](#ability-actor-info)
   * [UAttributeSet](#uattributeset)
     * [What are Attributes:](#what-are-attributes)
+  * [Creating Attributes](#creating-attributes)
+  * [Attribute Getters/Setters](#attribute-getterssetters)
 * [Multiplayer](#multiplayer)
   * [Replication](#replication)
   * [Set Replicated Mode](#set-replicated-mode)
@@ -15,6 +19,19 @@
     * [Client-Side Change Example WITHOUT Prediction](#client-side-change-example-without-prediction)
     * [Client-Side Change WITH Prediction](#client-side-change-with-prediction)
 <!-- TOC -->
+
+# General Unreal "Things"
+## Debug
+
+You can use up arrow on keyboard to reference previous commands
+
+* showdebug abilitysystem - Commands for debugging AbilitySystem
+    * Can use Page Up and Page Down to change who the debug is shown for.
+    * Shows Attributes for Avatar [Class] for owner [Class]. If you're using a BP it should show the BP_Character here
+    * Shows name of computer (name of whatever computer is the client to it?), location/rotation, instigator,
+      controller, and more
+    * Shows Owned Tags
+    * Shows Attributes
 
 # Gas
 
@@ -117,7 +134,7 @@ that parameter should be the OLD value of the given Attribute AND should be a co
     UFUNCTION()
     void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
-After you've prototyped this function the decleration should looks as such: 
+After you've prototyped this function the declaration should looks as such: 
 
     void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
     {
@@ -127,7 +144,7 @@ After you've prototyped this function the decleration should looks as such:
 This is providing the Rep Notify signal for specifically a Gameplay Attribute. It takes the class type of the 
 Attribute, new value, and old value.
 
-3 - Lastly you need to add this into a new overriden function "GetLifetimeReplicatedProps". This decleration is:
+3 - Lastly you need to add this into a new overriden function "GetLifetimeReplicatedProps". This declaration is:
 
     void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
     {
@@ -140,6 +157,20 @@ it is replicated without conditions and if the value is set on the server we wil
 
 There is an additional option for the last parameter "REPNOTIFY_OnChanged" which is an "optimized" possibility, but 
 with GAS we ALWAYS want to Rep Notify to potentially reply the effect (even if it didn't change!)
+
+## Attribute Getters/Setters
+Attributes SHOULD be adjusted from Gameplay Effects... However, if you cannot for some reason use Gameplay Effects 
+you can create Getters and Setters to these!
+
+To use this in your game you can define something like this, and then add game-specific functions as necessary:
+    
+    #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+    GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+    
+    ATTRIBUTE_ACCESSORS(UMyHealthSet, Health)
 
 # Multiplayer
 ## Replication
