@@ -34,7 +34,6 @@ You can use up arrow on keyboard to reference previous commands
     * Shows Attributes
 
 # Gas
-
 ## PlayerState
 Player States (APlayerState) are created for every player on a server (or in a standalone game).
 These are replicated to all clients, and contain network game relevant information about the player - such as 
@@ -171,6 +170,9 @@ To use this in your game you can define something like this, and then add game-s
     GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
     
     ATTRIBUTE_ACCESSORS(UMyHealthSet, Health)
+
+## Effect Actor
+A Temporary method of us creating an Actor that can adjust attributes on our Ability Component System.
 
 # Multiplayer
 ## Replication
