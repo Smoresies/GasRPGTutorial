@@ -170,9 +170,9 @@ To use this in your game you can define something like this, and then add game-s
     GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
     
     ATTRIBUTE_ACCESSORS(UMyHealthSet, Health)
-
+~~~~
 ## Effect Actor
-A Temporary method of us creating an Actor that can adjust attributes on our Ability Component System.
+[TBD]
 
 # Multiplayer
 ## Replication
