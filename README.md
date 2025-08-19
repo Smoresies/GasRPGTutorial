@@ -1,6 +1,10 @@
 <!-- TOC -->
-* [General Unreal "Things"](#general-unreal-things)
+* [General Unreal](#general-unreal)
+  * [UFUNCTION()](#ufunction)
+  * [UPROPERTY()](#uproperty)
   * [Debug](#debug)
+  * [UI](#ui)
+    * [Widgets](#widgets)
 * [Gas](#gas)
   * [PlayerState](#playerstate)
   * [UAbilitySystemComponent](#uabilitysystemcomponent)
@@ -10,6 +14,7 @@
     * [What are Attributes:](#what-are-attributes)
   * [Creating Attributes](#creating-attributes)
   * [Attribute Getters/Setters](#attribute-getterssetters)
+  * [Effect Actor](#effect-actor)
 * [Multiplayer](#multiplayer)
   * [Replication](#replication)
   * [Set Replicated Mode](#set-replicated-mode)
@@ -21,6 +26,23 @@
 <!-- TOC -->
 
 # General Unreal
+## UFUNCTION()
+A list of the UFUNCTION tags and what they do:
+
+* BlueprintImplementableEvent
+  * Allows us to implement/define this function in Blueprint, when creating a BP class of this type
+* BlueprintCallable
+  * Callable from Blueprint, will run whatever code we've implemented in C++
+
+## UPROPERTY()
+A list of the UPROPERTY tags and what they do:
+
+* BlueprintReadOnly
+  * Can be accessed in Blueprint but is treated as const (cannot be changed)
+* Category
+  * ??? Seems to just be sorting so far?
+* 
+
 ## Debug
 
 You can use up arrow on keyboard to reference previous commands
