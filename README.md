@@ -54,6 +54,20 @@ You can use up arrow on keyboard to reference previous commands
       controller, and more
     * Shows Owned Tags
     * Shows Attributes
+
+## AGameModeBase
+Seems to have a lot of information important to actually running the game, namely default/determined classes for 
+certain aspects of the runtime. Notable parts are:
+* Player Controller Class
+* Default Pawn Class
+* HUD Class
+* Player State Class
+* and many more
+
+Likely will be a class that is often overwritten to allow for game-specific functionality. Unsure if it needs much 
+functionality in the C++ side of things, but at least creating a game-specific version will allow for a good amount 
+of useful behavior!
+
 # UI
 Primarily we use the MVC (Model, View, Controller) implementation for UI in Unreal. The UI itself should be the View,
 influenced by the Model which is done by the Controller. The view itself will only need to worry about how the UI 
