@@ -78,7 +78,10 @@ GAS Tutorial - Lecture #30 has a lot of great tools on making a Widget BP. Key n
   * There are many pre-made pieces that you can add! 
 * Making a widget into "Is Variable" is useful for the BP Graph
 * Images take Brushes to change their appearance. Brushes appear to be a Image File given Behavior?
-* Overly is great for having multiple children. Likely where most of the non-boilerplate widget info will go
+* Overlay is great for having multiple children. Likely where most of the non-boilerplate widget info will go
+* Canvas Panel is a very EXPENSIVE Widget-Part (Almost surely a better name here?). Best to keep to only 1 for the 
+  Screen? Is used to "Set things by dragging them around"
+* 
 
 # Gas
 ## PlayerState
