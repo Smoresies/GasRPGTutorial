@@ -3,8 +3,8 @@
   * [UFUNCTION()](#ufunction)
   * [UPROPERTY()](#uproperty)
   * [Debug](#debug)
-  * [UI](#ui)
-    * [Widgets](#widgets)
+* [UI](#ui)
+  * [Widgets](#widgets)
 * [Gas](#gas)
   * [PlayerState](#playerstate)
   * [UAbilitySystemComponent](#uabilitysystemcomponent)
@@ -54,7 +54,7 @@ You can use up arrow on keyboard to reference previous commands
       controller, and more
     * Shows Owned Tags
     * Shows Attributes
-## UI
+# UI
 Primarily we use the MVC (Model, View, Controller) implementation for UI in Unreal. The UI itself should be the View,
 influenced by the Model which is done by the Controller. The view itself will only need to worry about how the UI 
 needs to look. Any functionality (button pressing for example) will be handled by the Controller to then signal the 
@@ -63,11 +63,22 @@ Model to make any necessary changes.
 This should be developed in such a way that the View (Widgets) can be changed out without the Controller caring, and 
 the Controller can be swapped out without the Model (backend) caring.
 
-### Widgets
+## Widgets
 Widgets inheirit from UUserWidget and are used primarily for our front-end UI information. These will directly 
 effect how our HUD looks.
 
 Widgets should know what their controller is (in MVC Architecture) but not the other way around.
+
+GAS Tutorial - Lecture #30 has a lot of great tools on making a Widget BP. Key notes: 
+
+* Prefix is WBP (Widget Blueprint)
+* Similar UI tooling to Godot
+  * Children are limited to their parent's sizing (cannot move outside of). Size Box is useful here!
+  * Some pieces are made to have 1 child, other many (Mainly overlay)
+  * There are many pre-made pieces that you can add! 
+* Making a widget into "Is Variable" is useful for the BP Graph
+* Images take Brushes to change their appearance. Brushes appear to be a Image File given Behavior?
+* Overly is great for having multiple children. Likely where most of the non-boilerplate widget info will go
 
 # Gas
 ## PlayerState
