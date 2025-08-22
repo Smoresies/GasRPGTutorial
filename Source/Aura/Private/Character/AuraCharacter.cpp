@@ -6,7 +6,9 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -52,4 +54,18 @@ void AAuraCharacter::InitAbilityActorInfo()
 	// Set our variables
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
+
+	// Due to the fact that only the Player on the Client will have a valid PlayerController
+	// (other controlled ones will have a PlayerController on their Client, but that is not replicated)
+	// We accept that AuraPlayerController MIGHT be null, but should not for our local client
+	// Therefore we use an if rather than a check here
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+		{
+			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
+
+	
 }

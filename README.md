@@ -2,7 +2,10 @@
 * [General Unreal](#general-unreal)
   * [UFUNCTION()](#ufunction)
   * [UPROPERTY()](#uproperty)
+  * [USTRUCT()](#ustruct)
   * [Debug](#debug)
+  * [AGameModeBase](#agamemodebase)
+  * [Variable Wrappers](#variable-wrappers)
 * [UI](#ui)
   * [Widgets](#widgets)
 * [Gas](#gas)
@@ -41,7 +44,13 @@ A list of the UPROPERTY tags and what they do:
   * Can be accessed in Blueprint but is treated as const (cannot be changed)
 * Category
   * ??? Seems to just be sorting so far?
-* 
+*
+
+## USTRUCT()
+A list of the USTRUCT tags and what they do:
+
+* BlueprintType
+  * Allows us to make this struct in Blueprint?
 
 ## Debug
 
@@ -67,6 +76,20 @@ certain aspects of the runtime. Notable parts are:
 Likely will be a class that is often overwritten to allow for game-specific functionality. Unsure if it needs much 
 functionality in the C++ side of things, but at least creating a game-specific version will allow for a good amount 
 of useful behavior!
+
+## Variable Wrappers
+There are a ton of Variable Wrappers in Unreal C++! Here are a few, where to use them, and why!
+
+* TObjectPtr
+  * This is used for Member Variables to hold data! Any Member Variable (other than interfaces) should use this! 
+    This is in replacement of Raw Pointers, but this should NOT be used outside of declaring the member variable in 
+    the class!
+* TScriptInterface
+  * This is used in place of TObjectPtr to specifically hold Member Variables which are Interfaces!
+* TSubclassOf
+  * This appears to be usable in both member and non-member variables. Is primarily used to hold class-types of 
+    other variables (often used for an existing variable so that we can store whatever type it is passed in as, in 
+    the cases of polymorphism). Allows us to Create Widgets/Objects/etc. of that class type when it comes time to!
 
 # UI
 Primarily we use the MVC (Model, View, Controller) implementation for UI in Unreal. The UI itself should be the View,
