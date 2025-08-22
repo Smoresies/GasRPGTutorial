@@ -6,6 +6,7 @@
   * [Debug](#debug)
   * [AGameModeBase](#agamemodebase)
   * [Variable Wrappers](#variable-wrappers)
+  * [Delegates](#delegates)
 * [UI](#ui)
   * [Widgets](#widgets)
 * [Gas](#gas)
@@ -43,7 +44,8 @@ A list of the UPROPERTY tags and what they do:
 * BlueprintReadOnly
   * Can be accessed in Blueprint but is treated as const (cannot be changed)
 * Category
-  * ??? Seems to just be sorting so far?
+  * ??? Seems to just be sorting so far? 
+  * You can do Category="FirstCategory|SubCategory"
 *
 
 ## USTRUCT()
@@ -51,6 +53,14 @@ A list of the USTRUCT tags and what they do:
 
 * BlueprintType
   * Allows us to make this struct in Blueprint?
+
+## UCLASS()
+A list of the UCLASS tags and what they do:
+
+* BlueprintType
+  * Can use as a type in the event graph (such as if we want to cast to it)
+* Blueprintable
+  * We can make a Blueprint based on this class
 
 ## Debug
 
@@ -90,6 +100,39 @@ There are a ton of Variable Wrappers in Unreal C++! Here are a few, where to use
   * This appears to be usable in both member and non-member variables. Is primarily used to hold class-types of 
     other variables (often used for an existing variable so that we can store whatever type it is passed in as, in 
     the cases of polymorphism). Allows us to Create Widgets/Objects/etc. of that class type when it comes time to!
+
+## Delegates
+Delegates are our way of doing Signals/Events that can be Broadcast in order to trigger reponsive behavior from 
+scripts that are listening for it (Listener/Observer Pattern). They have a unique way of being set up. Notably the 
+base Delegate looks like such:
+
+    DECLARE_DELEGATE(FDelegateNameSignature);
+The first Parameter for a Delegate must ALWAYS be its name, and this must always begin with an F. It appears that 
+ending it with Signature seems to be a Best Practice as well, to specify that it is a Delegate Type.
+
+The Delegate 
+decleration _can_ be adjusted in several notable ways. Such as adding a suffix, which will allow for parameters to be passed:
+
+    DECLARE_DELEGATE_OneParam(FOnHealthChangedSignature, float, NewHealth);
+    DECLARE_DELEGATE_FourParams(FDelegateNameSignature, float, ParamOne, int, ParamTwo, ...);
+Additionally we can specify it to be dynamic, multicast, or both:
+
+    DECLARE_DYNAMIC_DELEGATE(FDelegateNameSignature);
+    DECLARE_MULTICAST_DELEGATE(FDelegateNameSignature);
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegateNameSignature);
+These may also have Parameters (not shown here for my sanity). Dynamic seems to mean that it can be called/set-up 
+with Blueprint Events. Multicast seems to mean that there may be multiple Listeners that would be looking to see 
+when this Delegate is Broadcast, maybe specific to Blueprint(?) but likely works for both C++ & Blueprint.
+
+These declerations only declare _what_ the delegate is and what the delegate is named. To actually use the Delegate 
+you must create a variable (often/primarily/almost always a member variable to the class declaring it?) that you can 
+then use to Broadcast the necessary information:
+
+    ... // in class, likely in public so other classes can connect to the delegate
+    FDelegateNameSignature DelegateName;
+    ...
+
+
 
 # UI
 Primarily we use the MVC (Model, View, Controller) implementation for UI in Unreal. The UI itself should be the View,
