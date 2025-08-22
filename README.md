@@ -3,6 +3,7 @@
   * [UFUNCTION()](#ufunction)
   * [UPROPERTY()](#uproperty)
   * [USTRUCT()](#ustruct)
+  * [UCLASS()](#uclass)
   * [Debug](#debug)
   * [AGameModeBase](#agamemodebase)
   * [Variable Wrappers](#variable-wrappers)
@@ -45,20 +46,20 @@ A list of the UPROPERTY tags and what they do:
   * Can be accessed in Blueprint but is treated as const (cannot be changed)
 * Category
   * ??? Seems to just be sorting so far? 
-  * You can do Category="FirstCategory|SubCategory"
-*
+  * You can do Category="MainCategory|SubCategory"
+
 
 ## USTRUCT()
 A list of the USTRUCT tags and what they do:
 
 * BlueprintType
-  * Allows us to make this struct in Blueprint?
+  * Can be used as a Type in the Blueprint Event Graph. 
 
 ## UCLASS()
 A list of the UCLASS tags and what they do:
 
 * BlueprintType
-  * Can use as a type in the event graph (such as if we want to cast to it)
+  * Can use as a type in the Blueprint Event Graph (such as if we want to Cast to it)
 * Blueprintable
   * We can make a Blueprint based on this class
 
