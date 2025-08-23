@@ -302,6 +302,64 @@ To use this in your game you can define something like this, and then add game-s
     
     ATTRIBUTE_ACCESSORS(UMyHealthSet, Health)
 
+## Gameplay Effects
+Gameplay Effects are Objects of type UGameplayEffect. We use them to change both Attributes and Gameplay Tags. 
+Gameplay Effects Quick Notes:
+
+* Data Only!!! We DO NOT add Logic to them
+* Create blueprint based on the new Gameplay Effect class but we do not subclass the Gameplay Effect into child classes
+* Gameplay Effects change Attributes via Modifiers and Executions 
+* Can Stack! Have their on policies for how to stack!
+* Can add (and remove?) Gameplay Tags
+* Can Grant Abilities!
+
+
+### Modifiers: 
+* Come in various flavors, include complex custom calculations for when attribute changes must be 
+  intricate/specific to gameplay
+* Take a value (which we refer to as Magnitude) and use that Magnitude to change the Attribute in a way 
+  determined by the Modifier Operation
+* Types of Operations are: 
+  * Add: Simply adds a given Magnitude to a given value. You can Add negative numbers for Subtraction
+  * Multiply: Simply Multiplies
+  * Divide: Simply Divides
+  * Override: Replaces the Attributes value with the value provided
+
+
+### Magnitude Calculation Types:
+* Scalable Float: Specify a hardcoded value for the Magnitude directly, or use a table which scales the 
+  magnitude with the Gameplay Effects level
+* Attribute-Based: Uses another Attribute's value. For example, add the Player's Health to their Strength. This 
+  can be customized further, such as Adding Health to Strength * 10!
+* Custom Calculation Class (Also called Modifier Magnitude Calcuations... MMC): Create a class designed to capture 
+  other values such as Attributes (or any other variables we want) and use them in an arbitrarily complex 
+  calculation. 
+  * Very powerful way to set change a single attribute based on a custom calculation
+* Set by Caller: Key-Value Pair. Assign a Magnitude to a name/gameplay tag. Allows you to set the modifier's 
+  magnitude based on code logic at the time we create/apply the gameplay effect
+
+### Executions
+Custom Executions (also known as Gameplay Effect, Execution Calculation, or Exec Calc) that can change more than one 
+Attribute (and really anything else we choose to code in them). 
+
+These are the most powerful way to modify attributes in a Gameplay Effect.
+
+### Duration Policy
+Gameplay Effects will always have a Duration Policy attached. These can be:
+
+* Instant - Happens Instantly
+* Has Duration - modifies an attribute for a set period of time, after which that modification is undone (can be 
+  infinite). Good way of making buffs/debuffs!
+  * Infinite Effects aren't "permanent". They just don't go away until we MANUALLY remove them.
+
+### Gameplay Effect Spec
+A "Spec" is a more optimized/lightweight version of a Gameplay Effect that we might use instead of applying that 
+Gameplay Effect directly. The Spec contains the bare-bones information needed to perform the modifications, and the 
+only actual instance of the gampelay effect class that typically gets instatiated is the Class Default Object (CDO).
+
+Also carries information (Tags the effect has and an effect context). The Effect Context stores more information 
+about the effects being applied
+
 ## Effect Actor
 [TBD]
 
