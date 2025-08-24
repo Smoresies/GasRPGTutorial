@@ -172,6 +172,15 @@ player name, score, etc.
 
 Another definition: Container for variables to replicate between client/server for a specific player. Data container that doesn’t run much logic of his own. Since PlayerController is not available on all clients and Pawns are often destroyed as players die, the PlayerState is a good place to store data that must be replicated or persist between deaths.
 
+## UAbilitySystemBlueprintLibrary
+A static library of helper-functions that can do a number of pre-determined behaviors that might be helpful for 
+working with GAS. A list of useful functions are mentioned here:
+
+* GetAbilitySystemComponent(AActor*)
+  * Finds if the provided AActor has an AbilitySystemComponent. Either by checking if the Actor implements 
+    IAbilitySystemInterface and if not, it double checks with FindComponentByClass.
+* 
+
 ## UAbilitySystemComponent
 ### PlayerState vs Pawn-Owned
 As player pawns might be destroyed upon a player's death, the PlayerState allows us to hold the specific information
